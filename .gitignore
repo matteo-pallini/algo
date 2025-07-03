@@ -1,0 +1,7 @@
+tags
+*.pdf
+.idea
+.venv/*
+.envrc
+.ipynb_checkpoints/
+*/__pycache__/*

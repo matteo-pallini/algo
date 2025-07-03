@@ -1,0 +1,8 @@
+{
+    "include": ["algo"],
+    "venvPath": "/home/matteo/.virtualenvs",
+    "venv": "algo",
+    "reportUnusedImport": true,
+    "pythonVersion": "3.8",
+    "pythonPlatform": "Linux",
+}

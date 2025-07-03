@@ -1,0 +1,32 @@
+
+def inorder_traversal(node):
+    """order: L-C-R"""
+    if node is None:
+        return []
+    values = []
+    values.extend(inorder_traversal(node.left))
+    values.append(node.value)
+    values.extend(inorder_traversal(node.right))
+    return values
+
+
+def preorder_traversal(node):
+    """order: C-L-R"""
+    if node is None:
+        return []
+    values = list()
+    values.append(node.value)
+    values.extend(preorder_traversal(node.left))
+    values.extend(preorder_traversal(node.right))
+    return values
+
+
+def postorder_traversal(node):
+    """order: L-R-C"""
+    if node is None:
+        return []
+    values = list()
+    values.extend(postorder_traversal(node.left))
+    values.extend(postorder_traversal(node.right))
+    values.append(node.value)
+    return values
