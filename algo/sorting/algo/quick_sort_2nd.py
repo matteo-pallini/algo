@@ -13,24 +13,26 @@ to a randomly picked element we need to traverse part of the data structure.
 
 import random
 
-
 def quicksort(array, start, end):
-    if (end - start) > 1:
-        pivot = get_pivot(array, start, end)
-        quicksort(array, start, pivot)
-        quicksort(array, pivot, end)
+    if end - start >= 1:
+        partition = quicksort_partition(array, start, end)
+        quicksort(array, start, partition-1)
+        quicksort(array, partition+1, end)
+    return array
+
+def quicksort_partition(array, start, end):
+    pivot = random.choice(range(start, end))
+    array[pivot], array[end] = array[end], array[pivot]
+    partition = start - 1
+    for idx in range(start, end):
+        if array[idx] < array[end]:
+            partition += 1
+            array[idx], array[partition] = array[partition], array[idx]
+    partition += 1
+    array[end], array[partition] = array[partition], array[end]
+    return partition
 
 
-def get_pivot(array, start, end):
-    random_pivot = random.choice(range(start, end))
-    array[end], array[random_pivot] = array[random_pivot], array[end]
-
-    pivot_value, pivot_point = array[end], start-1
-
-    for idx in range(start, end-1):
-        if array[idx] < pivot_value:
-            pivot_point += 1
-            array[pivot_point], array[idx] = array[idx], array[pivot_point]
-    pivot_point += 1
-    array[pivot_point], array[end] = array[end], array[pivot_point]
-    return pivot_point
+if __name__ == "__main__":
+    array = [1, 1, 2, 1]
+    print(quicksort(array, 0, len(array)-1))
