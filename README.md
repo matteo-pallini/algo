@@ -1,14 +1,16 @@
-## Things I should be able to do in less than 10 mins (and with little sweat)
+## Practice problems
+
+## Things I should be able to do
 - merge sort
-- quick sort (done)
+- quick sort
 - insert sort
-- linked list (done)
+- linked list
 - tree traversals
 - balance a tree
 - tries
 - write a BST
 - graphs dfs bfs
-- heap (doen)
+- heap
 
 - have written down the time complexity of main data structures and algo
 - implement from scratch a hashtable
