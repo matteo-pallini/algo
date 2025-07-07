@@ -1,44 +1,62 @@
-class MaxHeap:
+from typing import Callable, Optional
 
-    def __init__(self, array):
+
+class Heap:
+
+    def __init__(self, comparator: Callable[[int, int], bool], array: Optional[list[int]] = None):
+        array = array if array else []
         self.length = len(array)
-        self._array = [0]+array
+        self.array: list[Optional[int]] = [None] + array  # used None here to make the math for identifying children and parents easier
+        self._comparator = comparator
+        self.heapify()
+
 
     def heapify(self):
-        idx = self.length//2
-        while idx > 0:
-            self._percolate_down(idx)
-            idx -= 1
+        mid = self.length // 2
+        while mid > 0:
+            self._bubble_down(mid)
+            mid -= 1
 
-    def insert(self, value):
-        self._array.append(value)
+    def remove_head(self) -> Optional[int]:
+        if self.length >= 1:
+            head = self.array[1]
+            self.array[1] = self.array[-1]
+            self.array.pop()
+            self.length -= 1
+            self._bubble_down(1)
+            return head
+
+    def insert(self, value: int) -> None:
+        self.array.append(value)
         self.length += 1
-        self.percolate_up(self.length)
+        self._bubble_up(self.length)
 
-    def delete_max(self):
-        self.length -= 1
-        self._array[1] = self._array[-1]
-        self._array.pop()
-        self._percolate_down(1)
+    def _bubble_down(self, idx: int) -> None:
+        next_head, left_child, right_child = idx, idx*2, idx*2+1
+        if left_child <= self.length and self._comparator(self.array[left_child], self.array[idx]):
+            next_head = left_child
+        if right_child <= self.length and self._comparator(self.array[right_child], self.array[next_head]):
+            next_head = right_child
+        if next_head != idx:
+            self.array[next_head], self.array[idx] = self.array[idx], self.array[next_head]
+            self._bubble_down(next_head)
 
-    def _percolate_up(self, idx):
-        while idx // 2 > 0:
-            if self._array[idx] > self._array[idx//2]:
-                self._array[idx //
-                            2], self._array[idx] = self._array[idx], self.array[idx//2]
+    def _bubble_up(self, idx: int) -> None:
+        parent = idx // 2
+        if parent > 0:
+            if self._comparator(self.array[idx], self.array[parent]):
+                self.array[parent], self.array[idx] = self.array[idx], self.array[parent]
+                self._bubble_up(parent)
 
-    def _percolate_down(self, idx):
-        while idx*2 <= self.length:
-            min_child = self.get_min_child(idx)
-            if self._array[idx] < self._array[min_child]:
-                self._array[idx], self._array[min_child] = self._array[min_child], self._array[idx]
-            idx = min_
 
-    def get_min_child(self, idx):
-        if idx*2+1 > self.length:
-            return idx*2
-        else:
-            if self.array[idx*2] > self.array[idx*2+1]:
-                return idx*2
-            else:
-                return idx*2+1
+if __name__ == "__main__":
+    import operator
+    max_heap = Heap(operator.gt, [3, 1, 7, 9, 2, 5])
+    expected = [9, 7, 5]
+    for e in expected:
+        assert max_heap.remove_head() == e
+    max_heap.insert(11)
+    max_heap.insert(4)
+    expected = [11, 4, 3, 2, 1]
+    for e in expected:
+        assert max_heap.remove_head() == e
