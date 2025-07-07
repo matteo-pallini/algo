@@ -1,6 +1,6 @@
 ## Practice problems
 
-## Things I should be able to do
+## Worth knowing
 - merge sort
 - quick sort
 - insert sort
@@ -12,9 +12,8 @@
 - graphs dfs bfs
 - heap
 
-- have written down the time complexity of main data structures and algo
+- time complexity of main data structures and algo
 - implement from scratch a hashtable
-- write a balanced tree
 
 ## General notes
 - Do not implement a Heap as a tree, always use an array, as per https://favtutor.com/blogs/heap-in-python
