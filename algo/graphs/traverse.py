@@ -28,3 +28,35 @@ def dfs(graph_root, searched_value):
             for linked_node in node.linked_nodes:
                 if linked_node not in visited:
                     stack.append(linked_node)
+
+
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+
+def preorder(node: Node):
+    """Root-Left-Right"""
+    if node:
+        print(node.value)
+        preorder(node.left)
+        preorder(node.right)
+
+
+def inorder(node: Node):
+    """Left-Root-Right"""
+    if node:
+        inorder(node.left)
+        print(node.value)
+        inorder(node.right)
+
+
+def postorder(node: Node):
+    """Left-Right-Root"""
+    if node:
+        postorder(node.left)
+        postorder(node.right)
+        print(node.value)
+
