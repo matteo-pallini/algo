@@ -41,7 +41,7 @@ class MultiplicativeCombiner(Combiner):
 
 if __name__ == "__main__":
     vals1, vals2 = [], []
-    with open("./location_ids.txt", "rt") as handle:
+    with open("input_full.txt", "rt") as handle:
         for l in handle.readlines():
             v1, v2 = l.replace("\n", "").split("   ")
             vals1.append(int(v1))
