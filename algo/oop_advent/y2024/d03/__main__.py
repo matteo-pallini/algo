@@ -1,5 +1,7 @@
-from dataclasses import dataclass
-from typing import Optional
+import copy
+import functools
+from dataclasses import dataclass, field
+from typing import Optional, Callable
 
 
 @dataclass
@@ -44,19 +46,22 @@ class TwoItemsOperation:
 
 
 @dataclass
-class FullProgram:
+class FullProgramRunner:
     program: str
+    prefilters: list[Callable[[str], str]] = field(default_factory=lambda: [])
 
     def find_all_instances_of(self, operation: str) -> list[TwoItemsOperation]:
         instances = []
-        program = str(self.program)
+        program = copy.copy(self.program)
+        for p in self.prefilters:
+            program = p(program)
+        print(program)
         while program.find(operation) >= 0:
             idx = program.find(operation)
             program = program[idx+len(operation):]
             two_items_operation = TwoItemsOperation()
             item = ItemOperation()
             while program:
-                print(program, item, two_items_operation)
                 next_ch, program = program[0], program[1:]
                 if next_ch == "(" and item.value is None and two_items_operation.item1 is None:
                     continue
@@ -74,11 +79,34 @@ class FullProgram:
         return instances
 
 
+def filter_out(program: str, switch_on: str, switch_off: str) -> str:
+    on = True
+    filtered_program = ""
+    while program:
+        if on:
+            idx = program.find(switch_off)
+            if idx == -1:
+                return filtered_program + program
+            filtered_program += program[:idx]
+            program = program[idx+len(switch_off):]
+            on = False
+        else:
+            idx = program.find(switch_on)
+            if idx == -1:
+                return filtered_program
+            program = program[idx + len(switch_on):]
+            on = True
+    return filtered_program
+
+
+
 
 if __name__ == "__main__":
     with open("input_full.txt", "rt") as handle:
-        full_program = FullProgram(program="".join(handle.readlines()))
-        ops = full_program.find_all_instances_of("mul")
+        full_program = "".join(handle.readlines())
+        do_dont_prefilter = functools.partial(filter_out, switch_on="do()", switch_off="don't()")
+        full_program_runner = FullProgramRunner(program=full_program, prefilters=[do_dont_prefilter])
+        ops = full_program_runner.find_all_instances_of("mul")
         final_v = sum([e.item1.value * e.item2.value for e in ops])
         print(final_v)
 
