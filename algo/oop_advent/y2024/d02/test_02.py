@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from algo.oop_advent.y2024.d02.main import Increasing, Decreasing, Or, Comparator
+from algo.oop_advent.y2024.d02.__main__ import Increasing, Decreasing, Or, Comparator
 
 
 def compare_expected_actual(comparator: Comparator, vals: Sequence[int], expected: list[bool]):
