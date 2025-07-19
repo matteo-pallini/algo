@@ -1,7 +1,8 @@
 import copy
 import dataclasses
 from collections import defaultdict
-from typing import DefaultDict
+from typing import DefaultDict, Tuple
+
 
 @dataclasses.dataclass
 class Node:
@@ -19,7 +20,7 @@ class UpdatesChecker:
             self._encountered[second] = Node(second)
         self._tree[first][second] = self._encountered[second]
 
-    def check_row(self, row: [str]) -> bool:
+    def check_row(self, row: list[str]) -> bool:
         for v in self._encountered.values():
             v.met = False
         for r in row:
@@ -32,6 +33,20 @@ class UpdatesChecker:
             self._encountered[r].met = True
         return True
 
+    def sort_row(self, row: list[str]) -> list[str]:
+        new_row = copy.copy(row)
+        idx = 1
+        while idx < len(new_row):
+            if idx == 0:
+                idx += 1
+                continue
+            if new_row[idx-1] in self._tree[new_row[idx]]:
+                new_row[idx-1], new_row[idx] = new_row[idx], new_row[idx-1]
+                idx -= 1
+            else:
+                idx += 1
+        return new_row
+
     def new(self) -> "UpdatesChecker":
         new_checker = copy.deepcopy(self)
         for v in new_checker._encountered.values():
@@ -39,13 +54,15 @@ class UpdatesChecker:
         return new_checker
 
 
-def get_good_rows(updates_checker_master: UpdatesChecker, rows: list[list[str]]) -> list[list[str]]:
-    good_rows = []
+def split_rows(updates_checker_master: UpdatesChecker, rows: list[list[str]]) -> Tuple[list[list[str]], list[list[str]]]:
+    good_rows, bad_rows = [], []
     for r in rows:
         updates_checker = updates_checker_master.new()
         if updates_checker.check_row(r):
             good_rows.append(r)
-    return good_rows
+        else:
+            bad_rows.append(r)
+    return good_rows, bad_rows
 
 
 def compute_final_count(rows: list[list[str]]) -> int:
@@ -68,9 +85,13 @@ if __name__ == "__main__":
             else:
                 updates_checker_master.add_rule(line)
 
-        good_rows = get_good_rows(updates_checker_master=updates_checker_master, rows=rows)
+        good_rows, bad_rows = split_rows(updates_checker_master=updates_checker_master, rows=rows)
+        sorted_bad = []
+        for b in bad_rows:
+            sorted_bad.append(updates_checker_master.sort_row(b))
         final = compute_final_count(good_rows)
-        print(final)
+        final_bad = compute_final_count(sorted_bad)
+        print(final, final_bad)
 
 
 
